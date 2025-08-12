@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Team Abhedya Design Calculator</title>
+  <style>
+    /* Base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f0f0f0;
+      background: url("images/background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      overflow-x: hidden; /* Prevent horizontal scrollbar from animations */
+    }
+
+    /* Splash Screen Animations */
+    #splash {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      animation: fadeOut 1s ease-in-out 2.5s forwards; /* Fades out after 2.5 seconds */
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    #splash img.logo {
+      width: 540px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    #splash img.car {
+      width: 100px;
+      margin-top: 20px;
+      animation: driveIn 2.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes driveIn {
+      0% { transform: translateX(-200px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Main Content Animations */
+    #main-content {
+      display: none;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      min-height: 100vh;
+      opacity: 0; /* Initial state for fade-in */
+      transform: translateY(20px); /* Initial state for slide-up */
+      animation: mainFadeIn 1s ease-in-out 1s forwards; /* Delayed animation */
+    }
+
+    @keyframes mainFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff3333;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.7); /* Title glow */
+    }
+    
+    /* Domain Buttons */
+    .domain-buttons {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    
+    .domain-buttons button {
+      padding: 12px 15px;
+      margin: 0 5px;
+      font-size: 1rem;
+      border: 2px solid #ff3333;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ff3333;
+      cursor: pointer;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smoother transition */
+      position: relative;
+      overflow: hidden;
+      transform: translateY(0);
+      box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
+    }
+
+    /* Cool button hover effect */
+    .domain-buttons button:hover {
+      background: #ff3333;
+      color: #000;
+      box-shadow: 0 8px 20px rgba(255, 51, 51, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.3); /* Add an inner glow */
+      transform: scale(1.1); /* Slight scale-up */
+    }
+    
+    .domain-buttons button:active {
+      transform: scale(0.95) translateY(2px); /* Scale down and move for a "press" effect */
+      box-shadow: 0 2px 10px rgba(255, 51, 51, 0.5);
+    }
+
+    /* Domain Section Animations */
+    .domain-section {
+      display: none;
+      background: rgba(20, 20, 20, 0.9);
+      padding: 25px;
+      margin: 20px auto;
+      border-radius: 15px;
+      max-width: 800px;
+      box-shadow: 0 0 15px #ff3333;
+      transform: translateX(-100%); /* Initial state for slide-in */
+      animation: slideIn 0.7s ease-in-out forwards; /* Applied via JavaScript */
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: #ff6666;
+      border-bottom: 2px solid rgba(255, 102, 102, 0.5);
+      padding-bottom: 10px;
+    }
+
+    /* Input focus glow effect */
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ff3333;
+      background: #1c1c1c;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(255, 51, 51, 0.8), 0 0 15px rgba(255, 51, 51, 0.4);
+      background: #2a2a2a;
+    }
+
+    .generate-button {
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 10px;
+      background: #ff3333;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s ease;
+      color: #000;
+      animation: pulse 1.5s infinite; /* Pulsing effect for call-to-action */
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 51, 51, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+    }
+
+    .generate-button:hover {
+      background: #cc2222;
+      transform: scale(1.05);
+      animation: none; /* Stop pulsing on hover */
+    }
+    
+    hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, rgba(255, 51, 51, 0), #ff3333, rgba(255, 51, 51, 0));
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <img src="images/logo.png" alt="Team Abhedya Logo" class="logo" />
+  </div>
+
+  <div id="main-content">
+    <h1>Team Abhedya – Design Portal</h1>
+    <div class="domain-buttons">
+      <button onclick="showDomain('suspension')">Suspension</button>
+      <button onclick="showDomain('brakes')">Brakes</button>
+      <button onclick="showDomain('Spur_gear')">Spur Gear</button>
+      <button onclick="showDomain('Bevel_gear')">Bevel Gear</button>
+      <button onclick="showDomain('Steering')">Steering</button>
+    </div>
+
+    <div id="suspension" class="domain-section">
+      <h2>Suspension Calculations</h2>
+      <label>Start Ride Frequency (Fr):</label><input type="number" id="Fr_start">
+      <label>End Ride Frequency (Fr):</label><input type="number" id="Fr_end">
+      <label>Sprung Mass (Ms):</label><input type="number" id="Ms">
+      <label>Unsprung Mass (Muns):</label><input type="number" id="Muns">
+      <label>Motion Ratio (MR):</label><input type="number" id="MR">
+      <label>Damping Factor (J):</label><input type="number" id="J">
+      <label>Piston Velocity (PV):</label><input type="number" id="PV">
+      <label>Front Sprung Mass (Mfs):</label><input type="number" id="Mfs">
+      <label>Rear Sprung Mass (Mrs):</label><input type="number" id="Mrs">
+      <label>Start Front Motion Ratio (MRf):</label><input type="number" id="MRf_start">
+      <label>End Front Motion Ratio (MRf):</label><input type="number" id="MRf_end">
+      <label>Step Front Motion Ratio:</label><input type="number" id="MRf_step">
+      <label>Start Rear Motion Ratio (MRr):</label><input type="number" id="MRr_start">
+      <label>End Rear Motion Ratio (MRr):</label><input type="number" id="MRr_end">
+      <label>Step Rear Motion Ratio:</label><input type="number" id="MRr_step">
+      <button class="generate-button" onclick="generateSuspensionCSV()">Generate CSV Output</button>
+    </div>
+
+    <div id="brakes" class="domain-section">
+      <h2>Brakes Calculations</h2>
+      <label>Pedal ratio (Pr):</label><input type="number" id="Pr">
+      <label>Pedal force (Pf) in N:</label><input type="number" id="Pf">
+      <label>Caliper bore area (Acb) in m²:</label><input type="number" id="Acb">
+      <label>Master cylinder bore area (Amcb) in m²:</label><input type="number" id="Amcb">
+      <label>Rolling radius of rotor (Rr) in m:</label><input type="number" id="Rr">
+      <label>Rolling radius of tire (Rt) in m:</label><input type="number" id="Rt">
+      <label>Initial velocity (V) in m/s:</label><input type="number" id="V">
+      <label>Wheelbase (l) in mm:</label><input type="number" id="l">
+      <label>CG height (h) in mm:</label><input type="number" id="h">
+      <label>Distance of CG from front axle (C) in mm:</label><input type="number" id="C">
+      <label>Distance of CG from rear axle (B) in mm:</label><input type="number" id="B">
+      <label>Mass start (kg):</label><input type="number" id="M_start">
+      <label>Mass end (kg):</label><input type="number" id="M_end">
+      <label>Mass step size (kg):</label><input type="number" id="M_step">
+      <button class="generate-button" onclick="generatebrakeCSV()">Generate CSV Output</button>
+    </div>
+
+    <div id="Spur_gear" class="domain-section">
+      <h2>Spur Gear Calculations</h2>
+      <label>Number of iterations:</label><input type="number" id="spur_iterations" onchange="createSpurInputs()">
+      <div id="spur_inputs_container"></div>
+      <button class="generate-button" onclick="generateSpurGearCSV()">Generate Spur Gear CSV</button>
+    </div>
+
+    <div id="Bevel_gear" class="domain-section">
+      <h2>Bevel Gear Calculations</h2>
+      <label>Number of iterations:</label><input type="number" id="bevel_iterations" onchange="createBevelInputs()">
+      <div id="bevel_inputs_container"></div>
+      <button class="generate-button" onclick="generateBevelGearCSV()">Generate Bevel Gear CSV</button>
+    </div>
+
+    <div id="Steering" class="domain-section">
+      <h2>Steering Calculations</h2>
+      <label>Wheelbase (l) in mm:</label><input type="number" id="l_steer">
+      <label>Front track width (FTW) in mm:</label><input type="number" id="FTW">
+      <label>Rear track width (RTW) in mm:</label><input type="number" id="RTW">
+      <label>CG height (h) in mm:</label><input type="number" id="h_steer">
+      <label>Pivot‑to‑pivot distance (C) in mm:</label><input type="number" id="C_steer">
+      <label>Turning radius (TR) in mm:</label><input type="number" id="TR">
+      <label>Inner wheel angle (THETAi) in rad:</label><input type="number" id="THETAi">
+      <label>Outer wheel angle (THETAo) in rad:</label><input type="number" id="THETAo">
+      <label>KPI to tire distance (KPI_TD) in mm:</label><input type="number" id="KPI_TD">
+      <label>Steering arm angle (SAA) in rad:</label><input type="number" id="SAA">
+      <label>Steering arm length (SAL) in mm:</label><input type="number" id="SAL">
+      <label>Rack diameter (Dr) in mm:</label><input type="number" id="Dr">
+      <label>Module (M):</label><input type="number" id="M">
+      <label>Face width pinion (FWp) in mm:</label><input type="number" id="FWp">
+      <label>Face width rack (FWr) in mm:</label><input type="number" id="FWr">
+      <label>Rack travel (RACKtr) in mm:</label><input type="number" id="RACKtr">
+      <label>Lock‑to‑lock steering angle (rad):</label><input type="number" id="lock-to-lock">
+      <button class="generate-button" onclick="generateSteeringCSV()">Generate Steering CSV</button>
+    </div>
+  </div>
+
+  <script>
+    function showDomain(domainId) {
+      document.querySelectorAll('.domain-section').forEach(s => s.style.display = 'none');
+      document.getElementById(domainId).style.display = 'block';
+    }
+
+    function generateSuspensionCSV() {
+      const pi = Math.PI;
+      const Fr_start = parseFloat(document.getElementById('Fr_start').value);
+      const Fr_end = parseFloat(document.getElementById('Fr_end').value);
+      const Ms = parseFloat(document.getElementById('Ms').value);
+      const Muns = parseFloat(document.getElementById('Muns').value);
+      const MR = parseFloat(document.getElementById('MR').value);
+      const J = parseFloat(document.getElementById('J').value);
+      const PV = parseFloat(document.getElementById('PV').value);
+      const Mfs = parseFloat(document.getElementById('Mfs').value);
+      const Mrs = parseFloat(document.getElementById('Mrs').value);
+      const MRf_start = parseFloat(document.getElementById('MRf_start').value);
+      const MRf_end = parseFloat(document.getElementById('MRf_end').value);
+      const MRf_step = parseFloat(document.getElementById('MRf_step').value);
+      const MRr_start = parseFloat(document.getElementById('MRr_start').value);
+      const MRr_end = parseFloat(document.getElementById('MRr_end').value);
+      const MRr_step = parseFloat(document.getElementById('MRr_step').value);
+
+      let csv = "Sprung Mass Data Table\nFr,Ms,MR,Ks,Wn,Cc,Dc,Df\n";
+      for (let Fr = Fr_start; Fr <= Fr_end + 0.01; Fr += 0.1) {
+        let Ks = 4 * pi * pi * Fr * Fr * MR * MR * Ms;
+        let Wn = (1 / (2 * pi)) * Math.sqrt(Ks / Ms);
+        let Cc = Math.sqrt(4 * Ks * Ms);
+        let Dc = Cc * J;
+        let Df = Dc * PV;
+        csv += `${Fr.toFixed(2)},${Ms},${MR},${Ks.toFixed(4)},${Wn.toFixed(4)},${Cc.toFixed(4)},${Dc.toFixed(4)},${Df.toFixed(4)}\n`;
+      }
+
+      csv += "\nUnsprung Mass Data Table\nFr,Muns,MR,Ks,Wn,Cc,Dc,Df\n";
+      for (let Fr = Fr_start; Fr <= Fr_end + 0.01; Fr += 0.1) {
+        let Ks = 4 * pi * pi * Fr * Fr * MR * MR * Muns;
+        let Wn = (1 / (2 * pi)) * Math.sqrt(Ks / Muns);
+        let Cc = Math.sqrt(4 * Ks * Muns);
+        let Dc = Cc * J;
+        let Df = Dc * PV;
+        csv += `${Fr.toFixed(2)},${Muns},${MR},${Ks.toFixed(4)},${Wn.toFixed(4)},${Cc.toFixed(4)},${Dc.toFixed(4)},${Df.toFixed(4)}\n`;
+      }
+
+      csv += "\nFront Sprung Mass Data Table (MRf Range)\nMRf,Fr,Mfs,Ks,Wn,Cc,Dc,Df\n";
+      for (let MRf = MRf_start; MRf <= MRf_end + 0.001; MRf += MRf_step) {
+        for (let Fr = Fr_start; Fr <= Fr_end + 0.01; Fr += 0.1) {
+          let Ks = 4 * pi * pi * Fr * Fr * MRf * MRf * Mfs;
+          let Wn = (1 / (2 * pi)) * Math.sqrt(Ks / Mfs);
+          let Cc = Math.sqrt(4 * Ks * Mfs);
+          let Dc = Cc * J;
+          let Df = Dc * PV;
+          csv += `${MRf.toFixed(2)},${Fr.toFixed(2)},${Mfs},${Ks.toFixed(4)},${Wn.toFixed(4)},${Cc.toFixed(4)},${Dc.toFixed(4)},${Df.toFixed(4)}\n`;
+        }
+      }
+
+      csv += "\nRear Sprung Mass Data Table (MRr Range)\nMRr,Fr,Mrs,Ks,Wn,Cc,Dc,Df\n";
+      for (let MRr = MRr_start; MRr <= MRr_end + 0.001; MRr += MRr_step) {
+        for (let Fr = Fr_start; Fr <= Fr_end + 0.01; Fr += 0.1) {
+          let Ks = 4 * pi * pi * Fr * Fr * MRr * MRr * Mrs;
+          let Wn = (1 / (2 * pi)) * Math.sqrt(Ks / Mrs);
+          let Cc = Math.sqrt(4 * Ks * Mrs);
+          let Dc = Cc * J;
+          let Df = Dc * PV;
+          csv += `${MRr.toFixed(2)},${Fr.toFixed(2)},${Mrs},${Ks.toFixed(4)},${Wn.toFixed(4)},${Cc.toFixed(4)},${Dc.toFixed(4)},${Df.toFixed(4)}\n`;
+        }
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "suspension_output.csv";
+      link.click();
+    }
+
+    function generatebrakeCSV() {
+      const Mu = 0.35;
+      const Pr = parseFloat(document.getElementById('Pr').value);
+      const Pf = parseFloat(document.getElementById('Pf').value);
+      const Acb = parseFloat(document.getElementById('Acb').value);
+      const Amcb = parseFloat(document.getElementById('Amcb').value);
+      const RR = parseFloat(document.getElementById('Rr').value);
+      const Rtire = parseFloat(document.getElementById('Rt').value);
+      const V = parseFloat(document.getElementById('V').value);
+      let l = parseFloat(document.getElementById('l').value);
+      let h = parseFloat(document.getElementById('h').value);
+      let C = parseFloat(document.getElementById('C').value);
+      let B = parseFloat(document.getElementById('B').value);
+      const M_start = parseFloat(document.getElementById('M_start').value);
+      const M_end = parseFloat(document.getElementById('M_end').value);
+      const M_step = parseFloat(document.getElementById('M_step').value);
+
+      l /= 1000;
+      h /= 1000;
+      C /= 1000;
+      B /= 1000;
+
+      let csv = "Brakes Output\nMass(kg),Fmc(N),Pmc(Pa),Fc(N),Fclamp(N),Trotor(Nm),F_tire(N),F_total(N),Decel(m/s^2),Decel(G),Stopping_dist(m),Wf(N),Wb(N)\n";
+
+      for (let M = M_start; M <= M_end; M += M_step) {
+        let weight = M * 9.81;
+        let Fmc = Pr * Pf;
+        let Pmc = Fmc / Amcb;
+        let Fc = Pmc * Acb;
+        let Fclamp = 2 * Fc;
+        let Ff_brake = Fclamp * Mu;
+        let Trotor = Ff_brake * RR;
+        let F_tire = Trotor / Rtire;
+        let F_total = 4 * F_tire;
+        let decel = F_total / M;
+        let decel_G = decel / 9.81;
+        let SD = (V * V) / (2 * decel);
+        let Wf = (C / l) * weight + (h / l) * M * decel;
+        let Wb = (B / l) * weight - (h / l) * M * decel;
+
+        csv += `${M.toFixed(2)},${Fmc.toFixed(2)},${Pmc.toFixed(2)},${Fc.toFixed(2)},${Fclamp.toFixed(2)},${Trotor.toFixed(2)},${F_tire.toFixed(2)},${F_total.toFixed(2)},${decel.toFixed(2)},${decel_G.toFixed(2)},${SD.toFixed(2)},${Wf.toFixed(2)},${Wb.toFixed(2)}\n`;
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "brake_output.csv";
+      link.click();
+    }
+
+
+    function createSpurInputs() {
+      const iterations = parseInt(document.getElementById("spur_iterations").value);
+      const container = document.getElementById("spur_inputs_container");
+      container.innerHTML = ""; // Clear previous
+
+      if (isNaN(iterations) || iterations < 1) return;
+
+      for (let i = 1; i <= iterations; i++) {
+        const group = document.createElement("div");
+        group.innerHTML = `
+          <h4>Iteration ${i}</h4>
+          <label>Power (kW):</label>
+          <input type="number" id="Kw_${i}">
+          <label>RPM of pinion:</label>
+          <input type="number" id="np_${i}">
+          <label>Module (m):</label>
+          <input type="number" id="m_${i}">
+          <label>Teeth on pinion (zp):</label>
+          <input type="number" id="zp_${i}">
+          <label>Teeth on gear (zg):</label>
+          <input type="number" id="zg_${i}">
+          <label>Pressure angle (degrees):</label>
+          <input type="number" id="alpha_${i}">
+          <label>Service factor (Cs):</label>
+          <input type="number" id="Cs_${i}">
+          <label>Brinell Hardness Number (BHN):</label>
+          <input type="number" id="BHN_${i}">
+          <label>Lewis form factor (Y):</label>
+          <input type="number" id="Y_${i}">
+          <label>Face width (b in mm):</label>
+          <input type="number" id="b_${i}">
+          <label>Ultimate tensile strength (Sut):</label>
+          <input type="number" id="Sut_${i}">
+          <hr />
+        `;
+        container.appendChild(group);
+      }
+    }
+    function generateSpurGearCSV() {
+      const PI = 3.14159;
+      const iterations = parseInt(document.getElementById("spur_iterations").value);
+      if (isNaN(iterations) || iterations < 1) {
+        alert("Please enter a valid number of iterations.");
+        return;
+      }
+
+      let csv = "Iteration,zp,zg,Torque (Mt),dp,Pt,Pr,V,Cv,Peff,Q,k,Sb,FOSb,Sw,FOSw\n";
+
+      for (let i = 1; i <= iterations; i++) {
+        const Kw = parseFloat(document.getElementById(`Kw_${i}`).value);
+        const np = parseFloat(document.getElementById(`np_${i}`).value);
+        const m = parseFloat(document.getElementById(`m_${i}`).value);
+        const zp = parseFloat(document.getElementById(`zp_${i}`).value);
+        const zg = parseFloat(document.getElementById(`zg_${i}`).value);
+        const alphaDeg = parseFloat(document.getElementById(`alpha_${i}`).value);
+        const Cs = parseFloat(document.getElementById(`Cs_${i}`).value);
+        const BHN = parseFloat(document.getElementById(`BHN_${i}`).value);
+        const Y = parseFloat(document.getElementById(`Y_${i}`).value);
+        const b = parseFloat(document.getElementById(`b_${i}`).value);
+        const Sut = parseFloat(document.getElementById(`Sut_${i}`).value);
+
+        const alpha = (alphaDeg * PI) / 180;
+        const Mt = (60 * 1e6 * Kw) / (2 * PI * np);
+        const dp = m * zp;
+        const Pt = (2 * Mt) / dp;
+        const Pr = Pt * Math.tan(alpha);
+        const V = (PI * dp * np) / 60000.0;
+        const Cv = 6.0 / (6.0 + V);
+        const Peff = (Cs * Pt) / Cv;
+        const sigmab = Sut / 3.0;
+        const Q = (2 * zg) / (zg + zp);
+        const k = 0.16 * Math.pow(BHN / 100.0, 2);
+        const Sb = Y * sigmab * m * b;
+        const Sw = b * Q * dp * k;
+        const FOSb = Sb / Peff;
+        const FOSw = Sw / Peff;
+
+        csv += `${i},${zp},${zg},${Mt.toFixed(2)},${dp.toFixed(2)},${Pt.toFixed(2)},${Pr.toFixed(2)},${V.toFixed(2)},${Cv.toFixed(2)},${Peff.toFixed(2)},${Q.toFixed(2)},${k.toFixed(2)},${Sb.toFixed(2)},${FOSb.toFixed(2)},${Sw.toFixed(2)},${FOSw.toFixed(2)}\n`;
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "spur_gear_output.csv";
+      link.click();
+    }
+
+    function createBevelInputs() {
+      const iterations = parseInt(document.getElementById("bevel_iterations").value);
+      const container = document.getElementById("bevel_inputs_container");
+      container.innerHTML = ""; // Clear previous inputs
+
+      if (isNaN(iterations) || iterations < 1) return;
+
+      for (let i = 1; i <= iterations; i++) {
+        const group = document.createElement("div");
+        group.innerHTML = `
+          <h4>Iteration ${i}</h4>
+          <label>Power (kW):</label>
+          <input type="number" id="bp_${i}">
+          <label>Module (m):</label>
+          <input type="number" id="bm_${i}">
+          <label>Teeth on pinion (Zp):</label>
+          <input type="number" id="bzp_${i}">
+          <label>Teeth on gear (Zg):</label>
+          <input type="number" id="bzg_${i}">
+          <label>RPM of pinion:</label>
+          <input type="number" id="bnp_${i}">
+          <label>Back-cone angle (gamma in radians):</label>
+          <input type="number" id="bgamma_${i}">
+          <label>Ultimate tensile strength (Sut):</label>
+          <input type="number" id="bSut_${i}">
+          <label>Lewis form factor (Y):</label>
+          <input type="number" id="bY_${i}">
+          <label>Brinell Hardness Number (BHN):</label>
+          <input type="number" id="bBHN_${i}">
+          <hr />
+        `;
+        container.appendChild(group);
+      }
+    }
+
+    function generateBevelGearCSV() {
+      const pi = 3.14159;
+      const C = 11400;
+      const e = 0.0125;
+      const Cs = 1.5;
+      const iterations = parseInt(document.getElementById("bevel_iterations").value);
+      if (isNaN(iterations) || iterations < 1) return;
+
+      let csv = "Iteration,Zp,Zg,Mt(N-mm),Pt(N),V(m/s),A0(mm),Q,K,Peff,Sb,FOSb,Sw,FOSw\n";
+
+      for (let i = 1; i <= iterations; i++) {
+        const P = parseFloat(document.getElementById(`bp_${i}`).value);
+        const m = parseFloat(document.getElementById(`bm_${i}`).value);
+        const Zp = parseFloat(document.getElementById(`bzp_${i}`).value);
+        const Zg = parseFloat(document.getElementById(`bzg_${i}`).value);
+        const np = parseFloat(document.getElementById(`bnp_${i}`).value);
+        const gamma = parseFloat(document.getElementById(`bgamma_${i}`).value);
+        const Sut = parseFloat(document.getElementById(`bSut_${i}`).value);
+        const Y = parseFloat(document.getElementById(`bY_${i}`).value);
+        const BHN = parseFloat(document.getElementById(`bBHN_${i}`).value);
+
+        const sigma_b = Sut / 3;
+        const Mt = (60000000 * P) / (2 * pi * np);
+        const Pt = (2 * Mt) / (m * Zp);
+        const V = (pi * m * Zp * np) / 60000;
+        const A0 = Math.sqrt((m * Zp / 2) ** 2 + (m * Zg / 2) ** 2);
+        const Q = (2 * Zg) / (Zg + Zp * Math.tan(gamma));
+        const K = 0.16 * Math.pow(BHN / 100, 2);
+        const b_g = A0 / 3; // Simplified approximation for face width
+        const Sb = m * sigma_b * b_g * Y * (1 - (b_g / A0));
+        const Sw = 0.75 * b_g * Q * m * Zp * K / Math.cos(gamma);
+        const Pd = (21 * V * (C * e * b_g + Pt)) / (21 * V + Math.sqrt((C * e * b_g) + Pt));
+        const Peff = (Cs * Pt) + Pd;
+        const FOSb = Sb / Peff;
+        const FOSw = Sw / Peff;
+
+        csv += `${i},${Zp},${Zg},${Mt.toFixed(2)},${Pt.toFixed(2)},${V.toFixed(2)},${A0.toFixed(2)},${Q.toFixed(2)},${K.toFixed(2)},${Peff.toFixed(2)},${Sb.toFixed(2)},${FOSb.toFixed(2)},${Sw.toFixed(2)},${FOSw.toFixed(2)}\n`;
+      }
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "bevel_gear_output.csv";
+      link.click();
+    }
+    
+    function generateSteeringCSV() {
+      const pi = Math.PI;
+
+      const l = parseFloat(document.getElementById('l_steer').value);
+      const FTW = parseFloat(document.getElementById('FTW').value);
+      const THETAo = parseFloat(document.getElementById('THETAo').value);
+      const THETAi = parseFloat(document.getElementById('THETAi').value);
+      const RACKtr = parseFloat(document.getElementById('RACKtr').value);
+      const lock_to_lock = parseFloat(document.getElementById('lock-to-lock').value);
+      const M = parseFloat(document.getElementById('M').value);
+
+      // Calculations
+      const Ackermann_Theoretical = Math.atan(l / (l / Math.tan(THETAo) - FTW));
+      const Ackermann_Percentage = (THETAi / Ackermann_Theoretical) * 100;
+      const Steering_Ratio = lock_to_lock / (Math.abs(THETAo) + Math.abs(THETAi));
+      const Pinion_Diameter = RACKtr / (lock_to_lock / 2);
+      const Pinion_Teeth = Pinion_Diameter * M;
+
+      // Prepare CSV
+      let csv = "Steering Output\n";
+      csv += "Wheelbase (mm),Front Track Width (mm),Outer Wheel Angle (rad),Inner Wheel Angle (rad),Rack Travel (mm),Lock-to-Lock (rad),Ackermann Theoretical (rad),Ackermann Percentage (%),Steering Ratio,Pinion Diameter (mm),Pinion Teeth\n";
+      csv += `${l},${FTW},${THETAo.toFixed(3)},${THETAi.toFixed(3)},${RACKtr},${lock_to_lock},${Ackermann_Theoretical.toFixed(3)},${Ackermann_Percentage.toFixed(2)},${Steering_Ratio.toFixed(2)},${Pinion_Diameter.toFixed(2)},${Pinion_Teeth.toFixed(2)}\n`;
+
+      // Download CSV
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "steering_output.csv";
+      link.click();
+    }
+
+    // Splash screen and content display logic
+    window.addEventListener("load", () => {
+      const splash = document.getElementById("splash");
+      const content = document.getElementById("main-content");
+      
+      // Delay for 3 seconds before showing the main content
+      setTimeout(() => {
+        splash.style.display = "none";
+        content.style.display = "block";
+      }, 3000); 
+    });
+  </script>
+</body>
+</html>
